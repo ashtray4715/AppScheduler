@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="activity_background_default">#FFFFFF</color>
+    <color name="activity_background_default_secondary">#F1F1F1</color>
+    <color name="activity_background_default_dark">#D5D5D5</color>
+    <color name="activity_background_default_anti">#121212</color>
+    <color name="activity_background_default_anti_light_version">#55121212</color>
+    <bool name="status_bar_text_color">true</bool>
+
+    <color name="colorPrimary">@color/activity_background_default</color>
+    <color name="colorPrimaryDark">@color/activity_background_default</color>
+    <color name="colorAccent">@color/activity_background_default_anti</color>
+    <color name="colorAccent_light_version">@color/activity_background_default_anti_light_version</color>
+
+</resources>

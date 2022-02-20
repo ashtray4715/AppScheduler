@@ -1,0 +1,25 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/activity_background_default</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/status_bar_text_color</item>
+        <item name="android:windowBackground">@color/activity_background_default</item>
+        <item name="android:statusBarColor">@color/activity_background_default</item>
+        <item name="android:windowLightStatusBar">@bool/status_bar_text_color</item>
+    </style>
+
+    <style name="NotifyCheckBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+    </style>
+
+    <style name="PlayerCountRadioButtonStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+    </style>
+
+</resources>
