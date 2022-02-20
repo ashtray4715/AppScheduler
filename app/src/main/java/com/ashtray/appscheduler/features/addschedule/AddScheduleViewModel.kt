@@ -1,4 +1,6 @@
 package com.ashtray.appscheduler.features.addschedule
 
-class AddScheduleViewModel {
+import androidx.lifecycle.ViewModel
+
+class AddScheduleViewModel: ViewModel() {
 }

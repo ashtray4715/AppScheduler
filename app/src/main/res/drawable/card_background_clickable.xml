@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/activity_background_default_secondary"/>
+            <corners android:radius="@dimen/menu_item_card_corner_radius"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="true" >
+        <shape android:shape="rectangle">
+            <solid android:color="@color/activity_background_default_dark" />
+            <corners android:radius="@dimen/menu_item_card_corner_radius"/>
+        </shape>
+    </item>
+
+</selector>

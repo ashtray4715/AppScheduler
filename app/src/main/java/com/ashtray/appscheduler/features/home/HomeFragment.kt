@@ -46,15 +46,11 @@ class HomeFragment: GPFragment() {
     ): View {
         d(TAG, "onCreateView: called")
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_home,
-            container,
-            false
-        )
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.rvAppList.layoutManager = LinearLayoutManager(context)
         //binding.rvAppList.adapter = recyclerViewAdapter
         binding.emptyGameListTextView.visibility = View.VISIBLE
+
         return binding.root
     }
 
@@ -69,6 +65,5 @@ class HomeFragment: GPFragment() {
             changeFragment(HistoryFragment.newInstance(), TransactionType.ADD_FRAGMENT)
         }
     }
-
 
 }

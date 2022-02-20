@@ -32,7 +32,7 @@ abstract class GPFragment : Fragment() {
 
     abstract fun getUniqueTag(): String
 
-    fun handleBackButtonPressed(): Boolean {
+    open fun handleBackButtonPressed(): Boolean {
         return false
     }
 
