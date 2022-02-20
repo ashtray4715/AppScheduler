@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout android:id="@+id/fragment_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".common.GPActivity">
-
-    <com.ashtray.appscheduler.common.GPActionBar
-        android:id="@+id/action_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:gp_actionbar_title="App Scheduler"
-        app:gp_actionbar_back_btn_visibility="true"
-        app:gp_actionbar_back_btn_icon="@drawable/ic_menu_store_24"
-        app:gp_show_action_bar_divider="false"
-        app:gp_menu_item_one_visibility="true"
-        app:gp_menu_item_one_icon="@drawable/ic_menu_add_24"
-        app:gp_menu_item_two_visibility="false"
-        app:gp_menu_text_option_visibility="false"/>
-
-
-
-
-</RelativeLayout>
+    tools:context=".common.GPActivity"/>
