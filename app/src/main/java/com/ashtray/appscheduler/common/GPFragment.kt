@@ -30,7 +30,7 @@ abstract class GPFragment : Fragment() {
         super.onDetach()
     }
 
-    abstract fun getUniqueTag(): String?
+    abstract fun getUniqueTag(): String
 
     fun handleBackButtonPressed(): Boolean {
         return false
