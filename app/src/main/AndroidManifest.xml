@@ -3,6 +3,7 @@
     package="com.ashtray.appscheduler">
 
     <application
+        android:name=".common.GPApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
