@@ -11,6 +11,7 @@ import com.ashtray.appscheduler.common.GPFragment.TransactionType
 import com.ashtray.appscheduler.common.GPLog.e
 import java.lang.Exception
 import android.widget.Toast
+import com.ashtray.appscheduler.features.home.HomeFragment
 
 class GPActivity : AppCompatActivity(), GPFragment.CallBacks {
 
@@ -22,7 +23,8 @@ class GPActivity : AppCompatActivity(), GPFragment.CallBacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //todo - have to show first fragment
+        changeFragment(HomeFragment.newInstance(), TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT)
+        d(TAG, "onCreate: [size=${supportFragmentManager.fragments.size}]")
     }
 
     override fun changeFragment(fragment: GPFragment, transactionType: TransactionType) {
