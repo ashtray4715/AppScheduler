@@ -1,4 +1,6 @@
 package com.ashtray.appscheduler.features.appselector
 
-class AppSelectorViewModel {
+import androidx.lifecycle.ViewModel
+
+class AppSelectorViewModel: ViewModel() {
 }

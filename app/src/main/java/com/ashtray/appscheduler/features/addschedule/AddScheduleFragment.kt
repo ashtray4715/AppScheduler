@@ -13,8 +13,11 @@ import com.ashtray.appscheduler.common.GPConst
 import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.databinding.FragmentAddScheduleBinding
+import com.ashtray.appscheduler.features.appselector.AppSelectorFragment
 import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
 import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
+
+import com.ashtray.appscheduler.common.GPUtils
 
 class AddScheduleFragment: GPFragment() {
 
@@ -95,11 +98,16 @@ class AddScheduleFragment: GPFragment() {
 
     private fun changeAppClicked() {
         d(TAG, "changeAppClicked: called")
+        changeFragment(AppSelectorFragment.newInstance(), TransactionType.ADD_FRAGMENT)
     }
 
     private fun appGotSelected(appId: String?) {
         d(TAG, "appGotSelected: [appId=${appId}]")
-
+        binding.apply {
+            tvAppName.text = GPUtils().getAppNameFromPkgName(context, appId)
+            tvAppPckName.text = appId
+            GPUtils().showAppIcon(ivAppIcon, appId, context)
+        }
     }
 
     private fun dateGotSelected(dateValue: String?) {

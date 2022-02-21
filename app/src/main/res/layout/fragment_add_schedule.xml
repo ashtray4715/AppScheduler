@@ -63,7 +63,10 @@
                             android:id="@+id/iv_app_icon"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_margin="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
                             android:layout_gravity="center_vertical"
                             tools:ignore="ContentDescription" />
 
