@@ -14,6 +14,7 @@ import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.databinding.FragmentAddScheduleBinding
 import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
+import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 
 class AddScheduleFragment: GPFragment() {
 
@@ -84,6 +85,7 @@ class AddScheduleFragment: GPFragment() {
 
     private fun changeTimeClicked() {
         d(TAG, "changeTimeClicked: called")
+        changeFragment(TimeSelectorFragment.newInstance(), TransactionType.ADD_FRAGMENT)
     }
 
     private fun changeDateClicked() {
@@ -101,12 +103,13 @@ class AddScheduleFragment: GPFragment() {
     }
 
     private fun dateGotSelected(dateValue: String?) {
-        d(TAG, "dateGotSelected: [appId=${dateValue}]")
+        d(TAG, "dateGotSelected: [date=${dateValue}]")
         binding.tvDateValue.text = dateValue
     }
 
-    private fun timeGotSelected(appId: String?) {
-        d(TAG, "timeGotSelected: [appId=${appId}]")
+    private fun timeGotSelected(timeValue: String?) {
+        d(TAG, "timeGotSelected: [time=${timeValue}]")
+        binding.tvTimeValue.text = timeValue
 
     }
 }

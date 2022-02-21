@@ -1,4 +1,4 @@
-package com.ashtray.appscheduler.features.dateselector
+package com.ashtray.appscheduler.features.timeselector
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,17 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPConst
 import com.ashtray.appscheduler.common.GPFragment
-import com.ashtray.appscheduler.common.GPLog.d
-import com.ashtray.appscheduler.databinding.FragmentDateSelectorBinding
+import com.ashtray.appscheduler.common.GPLog
+import com.ashtray.appscheduler.databinding.FragmentTimeSelectorBinding
 
-class DateSelectorFragment: GPFragment() {
+class TimeSelectorFragment: GPFragment() {
 
     companion object {
-        private const val TAG = "DateSelectorFragment"
+        private const val TAG = "TimeSelectorFragment"
 
-        fun newInstance(): DateSelectorFragment {
+        fun newInstance(): TimeSelectorFragment {
             val args = Bundle()
-            val fragment = DateSelectorFragment()
+            val fragment = TimeSelectorFragment()
             fragment.arguments = args
             return fragment
         }
@@ -31,19 +31,19 @@ class DateSelectorFragment: GPFragment() {
         return TAG
     }
 
-    private lateinit var viewModel: DateSelectorViewModel
-    private lateinit var binding: FragmentDateSelectorBinding
+    private lateinit var viewModel: TimeSelectorViewModel
+    private lateinit var binding: FragmentTimeSelectorBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        d(TAG, "onCreateView: called")
-        viewModel = ViewModelProvider(this).get(DateSelectorViewModel::class.java)
+        GPLog.d(TAG, "onCreateView: called")
+        viewModel = ViewModelProvider(this).get(TimeSelectorViewModel::class.java)
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_date_selector,
+            R.layout.fragment_time_selector,
             container,
             false
         )
@@ -55,21 +55,20 @@ class DateSelectorFragment: GPFragment() {
         binding.apply {
             actionBar.setBackListener { handleBackButtonPressed() }
             cancelButton.setOnClickListener { handleBackButtonPressed() }
-            selectButton.setOnClickListener { dateSelectedBtnPressed() }
+            selectButton.setOnClickListener { timeSelectedBtnPressed() }
         }
     }
 
-    private fun dateSelectedBtnPressed() {
-        val dPicker = binding.datePicker
-        val dateValue = "${dPicker.dayOfMonth}/${dPicker.month + 1}/${dPicker.year}"
-        setFragmentResult(GPConst.PK_DATE, bundleOf(GPConst.PK_DATE to  dateValue))
+    private fun timeSelectedBtnPressed() {
+        val timeValue = "${binding.timePicker.hour}:${binding.timePicker.minute}"
+        setFragmentResult(GPConst.PK_TIME, bundleOf(GPConst.PK_TIME to  timeValue))
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
     }
 
     override fun handleBackButtonPressed(): Boolean {
         setFragmentResult(
-            GPConst.PK_DATE,
-            bundleOf(GPConst.PK_DATE to  GPConst.MSG_NO_DATE_SELECTED)
+            GPConst.PK_TIME,
+            bundleOf(GPConst.PK_TIME to  GPConst.MSG_NO_TIME_SELECTED)
         )
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
