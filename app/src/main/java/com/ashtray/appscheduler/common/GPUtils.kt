@@ -3,6 +3,7 @@ package com.ashtray.appscheduler.common
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.R
 
@@ -34,12 +35,21 @@ class GPUtils {
             pkgName?.let {
                 context?.packageManager?.getApplicationIcon(it)?.let { icon ->
                     ivAppIcon.setImageDrawable(icon)
+                } ?: {
+                    e(TAG, "showAppIcon: invalid package name")
+                    ivAppIcon.setImageDrawable(
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_no_image_24)
+                    )
                 }
             }
         } catch (e: Exception) {
             e(TAG, "showAppIcon: problem occurs [${e.message}]")
             e.printStackTrace()
-            ivAppIcon.setBackgroundResource(R.drawable.ic_no_image_24)
+            context?.let {
+                ivAppIcon.setImageDrawable(
+                    ContextCompat.getDrawable(it, R.drawable.ic_no_image_24)
+                )
+            }
         }
     }
 }
