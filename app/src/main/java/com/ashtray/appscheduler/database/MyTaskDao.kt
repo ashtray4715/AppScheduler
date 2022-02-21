@@ -15,7 +15,7 @@ interface MyTaskDao {
     fun getAllTheRemainingTask(): LiveData<List<MyTaskEntity>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insertNewTask(entityMy: MyTaskEntity): Boolean
+    fun insertNewTask(entityMy: MyTaskEntity)
 
     @Query("DELETE FROM task_table WHERE start_time = :startTime")
     fun deleteGame(startTime: String)

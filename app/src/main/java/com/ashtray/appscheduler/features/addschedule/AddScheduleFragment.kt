@@ -18,6 +18,7 @@ import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
 import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 
 import com.ashtray.appscheduler.common.GPUtils
+import com.ashtray.appscheduler.database.MyTaskEntity
 
 class AddScheduleFragment: GPFragment() {
 
@@ -78,6 +79,24 @@ class AddScheduleFragment: GPFragment() {
             ivChangeDate.setOnClickListener { changeDateClicked() }
             ivChangeTime.setOnClickListener { changeTimeClicked() }
             actionBar.setBackListener { handleBackButtonPressed() }
+            saveButton.setOnClickListener { saveButtonPressed() }
+        }
+    }
+
+    private fun saveButtonPressed() {
+        val startTime = binding.tvTimeValue.text.toString()
+        val startDate = binding.tvDateValue.text.toString()
+        val myNewTask = MyTaskEntity(
+            "${startTime}_${startDate}",
+            binding.tvAppName.text.toString(),
+            binding.tvAppPckName.text.toString(),
+            false
+        )
+        if(viewModel.addNewSchedule(myNewTask)) {
+            showToastMessage("Insertion done")
+            changeFragment(this, TransactionType.REMOVE_FRAGMENT)
+        } else {
+            showToastMessage("Insertion failed")
         }
     }
 
