@@ -79,7 +79,9 @@ class AddScheduleFragment: GPFragment() {
             ivChangeDate.setOnClickListener { changeDateClicked() }
             ivChangeTime.setOnClickListener { changeTimeClicked() }
             actionBar.setBackListener { handleBackButtonPressed() }
+            actionBar.setMenuListener1 { saveButtonPressed() }
             saveButton.setOnClickListener { saveButtonPressed() }
+            cancelButton.setOnClickListener { handleBackButtonPressed() }
         }
     }
 

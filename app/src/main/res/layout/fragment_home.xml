@@ -18,7 +18,7 @@
             android:id="@+id/action_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:gp_actionbar_title="Game list"
+            app:gp_actionbar_title="Scheduled list"
             app:gp_actionbar_back_btn_visibility="true"
             app:gp_actionbar_back_btn_icon="@drawable/ic_menu_store_24"
             app:gp_show_action_bar_divider="false"
@@ -35,15 +35,15 @@
 
 
         <TextView
-            android:id="@+id/empty_game_list_text_view"
+            android:id="@+id/empty_list_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:alpha="0.9"
             android:text="No scheduled app found"
             android:textColor="@color/colorAccent"
-            android:alpha="0.9"
-            android:textStyle="bold"
             android:textSize="15sp"
+            android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
     </RelativeLayout>

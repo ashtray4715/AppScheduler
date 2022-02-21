@@ -35,6 +35,8 @@ class HomeFragment: GPFragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: FragmentHomeBinding
 
+    private lateinit var rAdapter: RemainingListAdapter
+
     override fun getUniqueTag(): String {
         return TAG
     }
@@ -47,10 +49,12 @@ class HomeFragment: GPFragment() {
         d(TAG, "onCreateView: called")
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        binding.rvAppList.layoutManager = LinearLayoutManager(context)
-        //binding.rvAppList.adapter = recyclerViewAdapter
-        binding.emptyGameListTextView.visibility = View.VISIBLE
-
+        rAdapter = RemainingListAdapter(context)
+        binding.rvAppList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = rAdapter
+        }
+        binding.emptyListTextView.visibility = View.VISIBLE
         return binding.root
     }
 
@@ -64,6 +68,20 @@ class HomeFragment: GPFragment() {
             d(TAG, "backBtnPressed: open history fragment")
             changeFragment(HistoryFragment.newInstance(), TransactionType.ADD_FRAGMENT)
         }
+        viewModel.getRemainingTaskListLiveData().observe(viewLifecycleOwner, { list ->
+            val remainingTaskList = mutableListOf<RemainingTaskInfo>()
+            for(item in list) {
+                remainingTaskList.add(
+                    RemainingTaskInfo(
+                        item.appName, item.pkgName, item.startTime
+                    )
+                )
+            }
+            rAdapter.setAppList(remainingTaskList)
+            if(remainingTaskList.isNotEmpty()) {
+                binding.emptyListTextView.visibility = View.GONE
+            }
+        })
     }
 
 }
