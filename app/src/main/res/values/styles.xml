@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:navigationBarColor">@color/activity_background_default</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/status_bar_text_color</item>
         <item name="android:windowBackground">@color/activity_background_default</item>

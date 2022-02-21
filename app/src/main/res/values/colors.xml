@@ -11,5 +11,6 @@
     <color name="colorPrimaryDark">@color/activity_background_default</color>
     <color name="colorAccent">@color/activity_background_default_anti</color>
     <color name="colorAccent_light_version">@color/activity_background_default_anti_light_version</color>
+    <color name="textColorPrimary">@color/colorAccent</color>
 
 </resources>
