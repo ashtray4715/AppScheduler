@@ -1,5 +1,6 @@
 package com.ashtray.appscheduler.features.appselector
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,9 @@ import com.ashtray.appscheduler.common.GPConst
 import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.databinding.FragmentAppSelectorBinding
+
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.content.pm.ApplicationInfo
 
 class AppSelectorFragment: GPFragment() {
 
@@ -47,7 +51,35 @@ class AppSelectorFragment: GPFragment() {
             container,
             false
         )
+        binding.rvAppList.apply {
+            layoutManager =  LinearLayoutManager(context)
+            adapter = AppSelectorAdapter(context).apply {
+                setAppList(getAllTheUserInstalledApp())
+            }
+        }
+
         return binding.root
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun getAllTheUserInstalledApp(): MutableList<MyAppInfo> {
+        val returnAppList = mutableListOf<MyAppInfo>()
+        context?.packageManager?.let { packageManager ->
+            val allPkgList = packageManager.getInstalledPackages(0)
+            for (pkgInfo in allPkgList) {
+                val currentAppInfo = pkgInfo.applicationInfo
+                if(currentAppInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
+                    returnAppList.add(
+                        MyAppInfo(
+                            currentAppInfo.loadLabel(packageManager).toString(),
+                            pkgInfo.packageName,
+                            context?.packageManager?.getApplicationIcon(currentAppInfo.packageName)
+                        )
+                    )
+                }
+            }
+        }
+        return returnAppList
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,9 +101,5 @@ class AppSelectorFragment: GPFragment() {
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
     }
-
-
-
-
 
 }
