@@ -38,6 +38,8 @@ class AppSelectorFragment: GPFragment() {
     private lateinit var viewModel: AppSelectorViewModel
     private lateinit var binding: FragmentAppSelectorBinding
 
+    private var listAdapter: AppSelectorAdapter? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,11 +53,12 @@ class AppSelectorFragment: GPFragment() {
             container,
             false
         )
+        listAdapter = AppSelectorAdapter(context).apply {
+            setAppList(getAllTheUserInstalledApp())
+        }
         binding.rvAppList.apply {
             layoutManager =  LinearLayoutManager(context)
-            adapter = AppSelectorAdapter(context).apply {
-                setAppList(getAllTheUserInstalledApp())
-            }
+            adapter = listAdapter
         }
 
         return binding.root
@@ -92,12 +95,20 @@ class AppSelectorFragment: GPFragment() {
     }
 
     private fun appSelectedBtnPressed() {
-
+        listAdapter?.getSelectedApp()?.let { myAppInfo ->
+            setFragmentResult(
+                GPConst.PK_APP_ID,
+                bundleOf(GPConst.PK_APP_ID to  myAppInfo.appPkgName)
+            )
+        }
+        changeFragment(this, TransactionType.REMOVE_FRAGMENT)
     }
 
     override fun handleBackButtonPressed(): Boolean {
-        val appId = "com.ashtray.appscheduler"
-        setFragmentResult(GPConst.PK_APP_ID, bundleOf(GPConst.PK_APP_ID to  appId))
+        setFragmentResult(
+            GPConst.PK_APP_ID,
+            bundleOf(GPConst.PK_APP_ID to GPConst.MSG_NO_APP_SELECTED)
+        )
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
     }

@@ -12,6 +12,7 @@ class AppSelectorAdapter(
 ): RecyclerView.Adapter<AppSelectorViewHolder>() {
 
     private val appList = mutableListOf<MyAppInfo>()
+    private var selectedAppPos = -1
 
     @SuppressLint("NotifyDataSetChanged")
     fun setAppList(list: MutableList<MyAppInfo>) {
@@ -27,7 +28,13 @@ class AppSelectorAdapter(
                 parent,
                 false
             )
-        )
+        ).apply {
+            setCallBacks( object : AppSelectorViewHolder.CallBacks {
+                override fun onItemSelected(position: Int) {
+                    singleAppSelectedFromTheList(position)
+                }
+            })
+        }
     }
 
     override fun onBindViewHolder(holder: AppSelectorViewHolder, position: Int) {
@@ -36,6 +43,29 @@ class AppSelectorAdapter(
 
     override fun getItemCount(): Int {
         return appList.size
+    }
+
+    private fun singleAppSelectedFromTheList(position: Int) {
+        if(selectedAppPos == position) {
+            appList[selectedAppPos].isSelected = false
+            notifyItemChanged(selectedAppPos)
+            selectedAppPos = -1
+            return
+        }
+        if(selectedAppPos != -1) {
+            appList[selectedAppPos].isSelected = false
+            notifyItemChanged(selectedAppPos)
+        }
+        selectedAppPos = position
+        appList[selectedAppPos].isSelected = true
+        notifyItemChanged(selectedAppPos)
+    }
+
+    fun getSelectedApp(): MyAppInfo? {
+        return when(selectedAppPos == -1) {
+            true -> null
+            else -> appList[selectedAppPos]
+        }
     }
 
 }

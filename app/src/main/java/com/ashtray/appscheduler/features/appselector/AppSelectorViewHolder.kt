@@ -8,7 +8,7 @@ import com.ashtray.appscheduler.R
 
 class AppSelectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    public interface CallBacks {
+    interface CallBacks {
         fun onItemSelected(position: Int)
     }
 
@@ -30,6 +30,10 @@ class AppSelectorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         itemView.findViewById<TextView>(R.id.tv_app_name).text = appInfo.appName
         itemView.findViewById<TextView>(R.id.tv_app_pck_name).text = appInfo.appPkgName
         itemView.findViewById<ImageView>(R.id.iv_app_icon).setImageDrawable(appInfo.appIcon)
+        itemView.findViewById<ImageView>(R.id.iv_selector).visibility = when(appInfo.isSelected) {
+            true -> View.VISIBLE
+            else -> View.INVISIBLE
+        }
     }
 
 }
