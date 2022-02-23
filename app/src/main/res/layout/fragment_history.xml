@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ashtray.appscheduler.features.history.HistoryViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/activity_background_default">
+
+        <com.ashtray.appscheduler.common.GPActionBar
+            android:id="@+id/action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:gp_actionbar_title="History"
+            app:gp_actionbar_back_btn_visibility="true"
+            app:gp_actionbar_back_btn_icon="@drawable/ic_menu_arrow_back_24"
+            app:gp_show_action_bar_divider="false"
+            app:gp_menu_item_one_visibility="true"
+            app:gp_menu_item_one_icon="@drawable/ic_menu_delete_24"
+            app:gp_menu_item_two_visibility="false"
+            app:gp_menu_text_option_visibility="false"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_app_list"
+            android:layout_below="@id/action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/empty_list_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:alpha="0.9"
+            android:text="Empty history"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+</layout>

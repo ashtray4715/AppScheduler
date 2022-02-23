@@ -81,8 +81,9 @@ class HomeFragment: GPFragment() {
                 )
             }
             rAdapter.setAppList(remainingTaskList)
-            if(remainingTaskList.isNotEmpty()) {
-                binding.emptyListTextView.visibility = View.GONE
+            binding.emptyListTextView.visibility = when(remainingTaskList.isEmpty()) {
+                true -> View.VISIBLE
+                else -> View.GONE
             }
         })
     }
