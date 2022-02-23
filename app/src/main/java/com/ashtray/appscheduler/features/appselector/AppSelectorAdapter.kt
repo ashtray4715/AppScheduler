@@ -24,7 +24,7 @@ class AppSelectorAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppSelectorViewHolder {
         return AppSelectorViewHolder(
             LayoutInflater.from(context).inflate(
-                R.layout.list_item_app_details,
+                R.layout.list_item_app_selector,
                 parent,
                 false
             )
