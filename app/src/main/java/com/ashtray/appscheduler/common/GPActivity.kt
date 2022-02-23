@@ -11,7 +11,7 @@ import com.ashtray.appscheduler.common.GPFragment.TransactionType
 import com.ashtray.appscheduler.common.GPLog.e
 import java.lang.Exception
 import android.widget.Toast
-import com.ashtray.appscheduler.features.home.HomeFragment
+import com.ashtray.appscheduler.features.splashscreen.SplashScreenFragment
 
 class GPActivity : AppCompatActivity(), GPFragment.CallBacks {
 
@@ -23,8 +23,10 @@ class GPActivity : AppCompatActivity(), GPFragment.CallBacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        changeFragment(HomeFragment.newInstance(), TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT)
-        d(TAG, "onCreate: [size=${supportFragmentManager.fragments.size}]")
+        changeFragment(
+            SplashScreenFragment.newInstance(),
+            TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT
+        )
     }
 
     override fun changeFragment(fragment: GPFragment, transactionType: TransactionType) {
