@@ -29,4 +29,11 @@ class MyRepository {
         }
     }
 
+    fun deleteMultipleTask(isDone: Boolean) {
+        asyncExecutor.executeAsync {
+            d(TAG, "deleteMultipleTask: executing..")
+            myTaskDao.deleteMultipleTask(isDone)
+        }
+    }
+
 }

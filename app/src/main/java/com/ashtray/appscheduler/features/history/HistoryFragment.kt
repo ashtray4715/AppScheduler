@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPDateTime
 import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog
 import com.ashtray.appscheduler.databinding.FragmentHistoryBinding
-import com.ashtray.appscheduler.features.addschedule.AddScheduleFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HistoryFragment: GPFragment() {
 
@@ -56,12 +59,15 @@ class HistoryFragment: GPFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.actionBar.setMenuListener1 {
-            GPLog.d(TAG, "menuClickListener: delete all completed task")
-            changeFragment(AddScheduleFragment.newInstance(), TransactionType.ADD_FRAGMENT)
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.deleteMultipleTask(isDone = true)
+                withContext(Dispatchers.Main) { showToastMessage("Delete done") }
+            }
         }
         binding.actionBar.setBackListener {
-            GPLog.d(TAG, "backBtnPressed: close history fragment")
-            changeFragment(this, TransactionType.REMOVE_FRAGMENT)
+            lifecycleScope.launch(Dispatchers.IO) {
+                handleBackButtonPressed()
+            }
         }
         viewModel.getCompletedTaskListLiveData().observe(viewLifecycleOwner, { list ->
             val completedTaskList = mutableListOf<CompletedTaskInfo>()
@@ -80,5 +86,10 @@ class HistoryFragment: GPFragment() {
                 else -> View.GONE
             }
         })
+    }
+
+    override fun handleBackButtonPressed(): Boolean {
+        changeFragment(this, TransactionType.REMOVE_FRAGMENT)
+        return true
     }
 }

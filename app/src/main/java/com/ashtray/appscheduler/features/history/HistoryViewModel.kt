@@ -2,6 +2,7 @@ package com.ashtray.appscheduler.features.history
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.repository.MyRepository
 
@@ -10,5 +11,9 @@ class HistoryViewModel: ViewModel() {
 
     fun getCompletedTaskListLiveData(): LiveData<List<MyTaskEntity>> {
         return repository.getCompletedTaskLiveData()
+    }
+
+    fun deleteMultipleTask(isDone: Boolean) {
+        repository.deleteMultipleTask(isDone)
     }
 }

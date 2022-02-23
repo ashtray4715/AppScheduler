@@ -18,7 +18,10 @@ interface MyTaskDao {
     fun insertNewTask(entityMy: MyTaskEntity)
 
     @Query("DELETE FROM task_table WHERE start_time = :startTime")
-    fun deleteGame(startTime: String)
+    fun deleteSingleTask(startTime: String)
+
+    @Query("DELETE FROM task_table WHERE is_done = :isDone")
+    fun deleteMultipleTask(isDone: Boolean)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun updateExistingTask(entityMy: MyTaskEntity)
