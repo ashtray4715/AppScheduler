@@ -10,8 +10,10 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPConst
+import com.ashtray.appscheduler.common.GPDateTime
 import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog.d
+import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.databinding.FragmentAddScheduleBinding
 import com.ashtray.appscheduler.features.appselector.AppSelectorFragment
 import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
@@ -19,6 +21,8 @@ import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 
 import com.ashtray.appscheduler.common.GPUtils
 import com.ashtray.appscheduler.database.MyTaskEntity
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddScheduleFragment: GPFragment() {
 
@@ -86,10 +90,37 @@ class AddScheduleFragment: GPFragment() {
     }
 
     private fun saveButtonPressed() {
-        val startTime = binding.tvTimeValue.text.toString()
+        //app selection check
+        if(binding.tvAppName.text.isEmpty() or binding.tvAppPckName.text.isEmpty()) {
+            e(TAG, "saveButtonPressed: app not selected")
+            showToastMessage("Select app first")
+            return
+        }
+
+        //date selection check
         val startDate = binding.tvDateValue.text.toString()
+        try {
+            SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(startDate)
+        } catch (e: Exception) {
+            e(TAG, "saveButtonPressed: date string parsing error")
+            e.printStackTrace()
+            showToastMessage("Select date first")
+            return
+        }
+
+        //time selection check
+        val startTime = binding.tvTimeValue.text.toString()
+        try {
+            SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(startTime)
+        } catch (e: Exception) {
+            e(TAG, "saveButtonPressed: time string parsing error")
+            e.printStackTrace()
+            showToastMessage("Select time first")
+            return
+        }
+
         val myNewTask = MyTaskEntity(
-            "${startTime}_${startDate}",
+            GPDateTime(startDate, startTime).dateTimeLong,
             binding.tvAppName.text.toString(),
             binding.tvAppPckName.text.toString(),
             false

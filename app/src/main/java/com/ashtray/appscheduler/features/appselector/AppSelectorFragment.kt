@@ -105,10 +105,6 @@ class AppSelectorFragment: GPFragment() {
     }
 
     override fun handleBackButtonPressed(): Boolean {
-        setFragmentResult(
-            GPConst.PK_APP_ID,
-            bundleOf(GPConst.PK_APP_ID to GPConst.MSG_NO_APP_SELECTED)
-        )
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
     }

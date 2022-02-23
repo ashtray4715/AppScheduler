@@ -61,16 +61,14 @@ class DateSelectorFragment: GPFragment() {
 
     private fun dateSelectedBtnPressed() {
         val dPicker = binding.datePicker
-        val dateValue = "${dPicker.dayOfMonth}/${dPicker.month + 1}/${dPicker.year}"
-        setFragmentResult(GPConst.PK_DATE, bundleOf(GPConst.PK_DATE to  dateValue))
+        val newValue = String.format(
+            "%02d-%02d-%04d", dPicker.dayOfMonth, dPicker.month + 1, dPicker.year
+        )
+        setFragmentResult(GPConst.PK_DATE, bundleOf(GPConst.PK_DATE to  newValue))
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
     }
 
     override fun handleBackButtonPressed(): Boolean {
-        setFragmentResult(
-            GPConst.PK_DATE,
-            bundleOf(GPConst.PK_DATE to  GPConst.MSG_NO_DATE_SELECTED)
-        )
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
     }

@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 
 import com.ashtray.appscheduler.R
+import com.ashtray.appscheduler.common.GPDateTime
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.features.addschedule.AddScheduleFragment
 import com.ashtray.appscheduler.features.history.HistoryFragment
@@ -73,7 +74,9 @@ class HomeFragment: GPFragment() {
             for(item in list) {
                 remainingTaskList.add(
                     RemainingTaskInfo(
-                        item.appName, item.pkgName, item.startTime
+                        appName = item.appName,
+                        appPkgName = item.pkgName,
+                        startTime = GPDateTime(item.startTime).dateTimeString
                     )
                 )
             }

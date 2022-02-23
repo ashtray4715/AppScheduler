@@ -81,18 +81,20 @@
                                 android:id="@+id/tv_app_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="App name?"
+                                android:hint="App name?"
                                 android:textSize="18sp"
                                 android:textColor="#FF000000"
+                                android:textColorHint="#FF000000"
                                 tools:ignore="HardcodedText" />
 
                             <TextView
                                 android:id="@+id/tv_app_pck_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Package name?"
+                                android:hint="Package name?"
                                 android:textSize="15sp"
                                 android:textColor="#77000000"
+                                android:textColorHint="#77000000"
                                 tools:ignore="HardcodedText" />
 
                         </LinearLayout>
@@ -126,8 +128,9 @@
                         android:layout_toStartOf="@id/iv_change_date"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="Date?"
+                        android:hint="Date?"
                         android:textColor="#FF000000"
+                        android:textColorHint="#FF000000"
                         android:textSize="18sp"
                         tools:ignore="HardcodedText" />
 
@@ -158,8 +161,9 @@
                         android:layout_toStartOf="@id/iv_change_time"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="Time?"
+                        android:hint="Time?"
                         android:textColor="#FF000000"
+                        android:textColorHint="#FF000000"
                         android:textSize="18sp"
                         tools:ignore="HardcodedText" />
 

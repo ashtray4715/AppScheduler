@@ -8,16 +8,16 @@ import androidx.room.PrimaryKey
 data class MyTaskEntity(
     @PrimaryKey
     @ColumnInfo(name = "start_time")
-    var startTime: String,
+    var startTime: Long,
 
     @ColumnInfo(name = "app_name")
-    val appName: String?,
+    val appName: String,
 
     @ColumnInfo(name = "pkg_name")
-    val pkgName: String?,
+    val pkgName: String,
 
     @ColumnInfo(name = "is_done")
-    val isDone: Boolean?
+    val isDone: Boolean
 )
 
 

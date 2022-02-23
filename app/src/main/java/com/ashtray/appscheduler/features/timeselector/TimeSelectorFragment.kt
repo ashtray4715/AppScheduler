@@ -60,16 +60,14 @@ class TimeSelectorFragment: GPFragment() {
     }
 
     private fun timeSelectedBtnPressed() {
-        val timeValue = "${binding.timePicker.hour}:${binding.timePicker.minute}"
+        val timeValue = String.format(
+            "%02d:%02d", binding.timePicker.hour, binding.timePicker.minute
+        )
         setFragmentResult(GPConst.PK_TIME, bundleOf(GPConst.PK_TIME to  timeValue))
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
     }
 
     override fun handleBackButtonPressed(): Boolean {
-        setFragmentResult(
-            GPConst.PK_TIME,
-            bundleOf(GPConst.PK_TIME to  GPConst.MSG_NO_TIME_SELECTED)
-        )
         changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         return true
     }
