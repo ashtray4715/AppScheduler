@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.ashtray.appscheduler.repository.MyRepository
+import android.os.PowerManager
 
 class GPTaskExecutor: BroadcastReceiver() {
     companion object {
@@ -26,15 +27,17 @@ class GPTaskExecutor: BroadcastReceiver() {
         Log.i(TAG, "onBroadcastReceive: startTime = ${GPDateTime(startTime.toLong()).dateTimeString}")
 
         try {
-            val launcherIntent = context?.packageManager?.getLaunchIntentForPackage(appId)
-            launcherIntent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context?.applicationContext?.startActivity(launcherIntent)
-            Log.i(TAG, "onBroadcastReceive: app opened successfully ${launcherIntent != null}")
-            Toast.makeText(context, "app launched", Toast.LENGTH_SHORT).show()
+            context?.startActivity(
+                context?.packageManager?.getLaunchIntentForPackage(appId)?.apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+            )
+            Log.i(TAG, "onBroadcastReceive: app opened successfully ")
+            Toast.makeText(context, "app launched", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "onBroadcastReceive: app can't be opened")
             e.printStackTrace()
-            Toast.makeText(context, "app not launched", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "app not launched", Toast.LENGTH_LONG).show()
         }
 
         context?.let {

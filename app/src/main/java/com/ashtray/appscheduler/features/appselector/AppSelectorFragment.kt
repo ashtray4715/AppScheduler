@@ -1,6 +1,7 @@
 package com.ashtray.appscheduler.features.appselector
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.databinding.FragmentAppSelectorBinding
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.content.pm.ApplicationInfo
 
 class AppSelectorFragment: GPFragment() {
 
@@ -68,18 +68,20 @@ class AppSelectorFragment: GPFragment() {
     private fun getAllTheUserInstalledApp(): MutableList<MyAppInfo> {
         val returnAppList = mutableListOf<MyAppInfo>()
         context?.packageManager?.let { packageManager ->
-            val allPkgList = packageManager.getInstalledPackages(0)
-            for (pkgInfo in allPkgList) {
-                val currentAppInfo = pkgInfo.applicationInfo
-                if(currentAppInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
-                    returnAppList.add(
-                        MyAppInfo(
-                            currentAppInfo.loadLabel(packageManager).toString(),
-                            pkgInfo.packageName,
-                            context?.packageManager?.getApplicationIcon(currentAppInfo.packageName)
-                        )
+            val allResolveInfo = packageManager.queryIntentActivities(
+                Intent(Intent.ACTION_MAIN, null).apply {
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                }, 0
+            )
+            for (resolveInfo in allResolveInfo) {
+                val currentAppInfo = resolveInfo.activityInfo.applicationInfo
+                returnAppList.add(
+                    MyAppInfo(
+                        currentAppInfo.loadLabel(packageManager).toString(),
+                        currentAppInfo.packageName,
+                        context?.packageManager?.getApplicationIcon(currentAppInfo.packageName)
                     )
-                }
+                )
             }
         }
         return returnAppList
