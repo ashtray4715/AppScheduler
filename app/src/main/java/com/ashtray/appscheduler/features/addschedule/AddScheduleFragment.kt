@@ -201,7 +201,8 @@ class AddScheduleFragment: GPFragment() {
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
-        alarmManager?.set(
+        alarmManager?.cancel(pendingIntent)
+        alarmManager?.setExact(
             AlarmManager.RTC_WAKEUP,
             myTaskEntity.startTime,
             pendingIntent

@@ -34,6 +34,10 @@ class MyRepository(context: Context) {
 
     fun getCompletedTaskLiveData(): LiveData<List<MyTaskEntity>> = completedTasks
 
+    fun getRemainingTaskList(): List<MyTaskEntity> {
+        return myTaskDao.getRemainingTaskList()
+    }
+
     fun insertNewTask(entity: MyTaskEntity) {
         asyncExecutor.executeAsync {
             d(TAG, "insertNewTask: executing..")

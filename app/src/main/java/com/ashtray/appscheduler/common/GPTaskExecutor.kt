@@ -6,7 +6,6 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.ashtray.appscheduler.repository.MyRepository
-import android.os.PowerManager
 
 class GPTaskExecutor: BroadcastReceiver() {
     companion object {
@@ -28,7 +27,7 @@ class GPTaskExecutor: BroadcastReceiver() {
 
         try {
             context?.startActivity(
-                context?.packageManager?.getLaunchIntentForPackage(appId)?.apply {
+                context.packageManager?.getLaunchIntentForPackage(appId)?.apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
