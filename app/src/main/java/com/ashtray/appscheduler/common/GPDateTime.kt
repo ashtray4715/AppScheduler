@@ -26,13 +26,13 @@ class GPDateTime {
         dateTimeLong = dateTimeLongValue
         dateTimeString = convertMillisecondsToDate(dateTimeLongValue)
 
-        hourValue = dateTimeString.substring(0, 1)
-        minuteValue = dateTimeString.substring(3, 4)
+        hourValue = dateTimeString.substring(0, 2)
+        minuteValue = dateTimeString.substring(3, 5)
         timeString = "$hourValue:$minuteValue"
 
-        dateValue = dateTimeString.substring(6, 7)
-        monthValue = dateTimeString.substring(9, 10)
-        yearValue = dateTimeString.substring(12,15)
+        dateValue = dateTimeString.substring(6, 8)
+        monthValue = dateTimeString.substring(9, 11)
+        yearValue = dateTimeString.substring(12,16)
         dateString = "$dateValue-$monthValue-$yearValue"
     }
 
@@ -68,5 +68,17 @@ class GPDateTime {
     private fun convertMillisecondsToDate(dateTimeLongValue: Long): String {
         val format = SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.ENGLISH)
         return format.format(Date(dateTimeLongValue))
+    }
+
+    override fun toString(): String {
+        return "[dateTimeLong:$dateTimeLong]" +
+                "[dateTimeString:$dateTimeString]" +
+                "[hour:$hourValue]" +
+                "[minute:$minuteValue]" +
+                "[year:$yearValue]" +
+                "[month:$monthValue]" +
+                "[date:$dateValue]" +
+                "[dateString:$dateString]" +
+                "[timeString:$timeString]"
     }
 }

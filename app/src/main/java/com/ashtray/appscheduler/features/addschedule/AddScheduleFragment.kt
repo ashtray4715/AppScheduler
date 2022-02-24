@@ -9,9 +9,6 @@ import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.ashtray.appscheduler.R
-import com.ashtray.appscheduler.common.GPConst
-import com.ashtray.appscheduler.common.GPDateTime
-import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.databinding.FragmentAddScheduleBinding
@@ -19,10 +16,17 @@ import com.ashtray.appscheduler.features.appselector.AppSelectorFragment
 import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
 import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 
-import com.ashtray.appscheduler.common.GPUtils
 import com.ashtray.appscheduler.database.MyTaskEntity
 import java.text.SimpleDateFormat
 import java.util.*
+import android.app.AlarmManager
+
+import android.app.PendingIntent
+import android.content.Context
+
+import android.content.Intent
+import com.ashtray.appscheduler.common.*
+
 
 class AddScheduleFragment: GPFragment() {
 
@@ -90,42 +94,41 @@ class AddScheduleFragment: GPFragment() {
     }
 
     private fun saveButtonPressed() {
-        //app selection check
-        if(binding.tvAppName.text.isEmpty() or binding.tvAppPckName.text.isEmpty()) {
-            e(TAG, "saveButtonPressed: app not selected")
+        val appName = getUserSelectedAppName() ?: let {
             showToastMessage("Select app first")
             return
         }
-
-        //date selection check
-        val startDate = binding.tvDateValue.text.toString()
-        try {
-            SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(startDate)
-        } catch (e: Exception) {
-            e(TAG, "saveButtonPressed: date string parsing error")
-            e.printStackTrace()
+        val appPkgName = getUserSelectedAppPkgName() ?: let {
+            showToastMessage("Select app first")
+            return
+        }
+        val startDate = getUserSelectedDate() ?: let {
             showToastMessage("Select date first")
             return
         }
-
-        //time selection check
-        val startTime = binding.tvTimeValue.text.toString()
-        try {
-            SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(startTime)
-        } catch (e: Exception) {
-            e(TAG, "saveButtonPressed: time string parsing error")
-            e.printStackTrace()
+        val startTime = getUserSelectedTime() ?: let {
             showToastMessage("Select time first")
             return
         }
-
+        val selectedDateTime = GPDateTime(startDate, startTime).dateTimeLong
         val myNewTask = MyTaskEntity(
-            GPDateTime(startDate, startTime).dateTimeLong,
-            binding.tvAppName.text.toString(),
-            binding.tvAppPckName.text.toString(),
-            false
+            startTime = selectedDateTime,
+            appName = appName,
+            pkgName = appPkgName,
+            isDone = false
         )
-        if(viewModel.addNewSchedule(myNewTask)) {
+        if(System.currentTimeMillis() > selectedDateTime) {
+            showToastMessage("Select future date")
+            e(TAG, "saveButtonPressed: past time selection error")
+            return
+        }
+        if(selectionTimeSlotAlreadyBooked(selectedDateTime)) {
+            showToastMessage("Time slot already booked")
+            e(TAG, "saveButtonPressed: time slot already booked error")
+            return
+        }
+        if(scheduleTask(myNewTask)) {
+            viewModel.addNewSchedule(myNewTask)
             showToastMessage("Insertion done")
             changeFragment(this, TransactionType.REMOVE_FRAGMENT)
         } else {
@@ -171,5 +174,87 @@ class AddScheduleFragment: GPFragment() {
         d(TAG, "timeGotSelected: [time=${timeValue}]")
         binding.tvTimeValue.text = timeValue
 
+    }
+
+    private fun scheduleTask(myTaskEntity: MyTaskEntity): Boolean {
+        val gpDateTime1 = GPDateTime(myTaskEntity.startTime)
+        d(TAG, "scheduleTask1: $gpDateTime1")
+
+        val gpDateTime2 = GPDateTime(gpDateTime1.dateString, gpDateTime1.timeString)
+        d(TAG, "scheduleTask2: $gpDateTime2")
+
+        val gpDateTime3 = GPDateTime(gpDateTime2.dateTimeLong)
+        d(TAG, "scheduleTask3: $gpDateTime3")
+
+
+
+        d(TAG, "scheduleTask: broadcast id value = ${(myTaskEntity.startTime / 10000).toInt()}")
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+        val intent = Intent(context, GPTaskExecutor::class.java).apply {
+            putExtra(GPConst.PK_APP_ID, myTaskEntity.pkgName)
+            putExtra(GPConst.PK_START_TIME, myTaskEntity.startTime.toString())
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            (myTaskEntity.startTime / 10000).toInt(),
+            intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager?.set(
+            AlarmManager.RTC_WAKEUP,
+            myTaskEntity.startTime,
+            pendingIntent
+        )
+        return alarmManager != null
+    }
+
+    private fun getUserSelectedDate(): String? {
+        val startDate = binding.tvDateValue.text.toString()
+        return try {
+            SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(startDate)
+            startDate
+        } catch (e: Exception) {
+            e(TAG, "getSelectedDate: date string parsing error")
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getUserSelectedTime(): String? {
+        val startTime = binding.tvTimeValue.text.toString()
+        return try {
+            SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(startTime)
+            startTime
+        } catch (e: Exception) {
+            e(TAG, "saveButtonPressed: time string parsing error")
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getUserSelectedAppName(): String? {
+        val name = binding.tvAppName.text.toString()
+        return when(name.isNotEmpty()) {
+            true -> name
+            else -> null
+        }
+    }
+
+    private fun getUserSelectedAppPkgName(): String? {
+        val pkgName = binding.tvAppPckName.text.toString()
+        return when(pkgName.isNotEmpty()) {
+            true -> pkgName
+            else -> null
+        }
+    }
+
+    private fun selectionTimeSlotAlreadyBooked(selectedDateTime: Long): Boolean {
+        for(item in viewModel.getRemainingTaskListLiveData().value ?: emptyList()) {
+            if(item.startTime == selectedDateTime) {
+                return true
+            }
+        }
+        return false
     }
 }

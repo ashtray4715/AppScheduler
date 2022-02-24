@@ -85,7 +85,6 @@ class GPActionBar(
         tvTitle = view.findViewById(R.id.tv_title)
         tvTextOptionMenu = view.findViewById(R.id.tv_text_option_menu)
         actionBarDivider = view.findViewById(R.id.action_bar_divider)
-        GPLog.d(TAG, "back is initialized [${ivBack == null}]")
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -101,7 +100,6 @@ class GPActionBar(
                     R.styleable.GPActionBar_gp_actionbar_back_btn_visibility -> {
                         val status = typedArray.getBoolean(currentAttribute, false)
                         ivBack?.visibility = if(status) View.VISIBLE else View.GONE
-                        GPLog.d(TAG, "found value = $status")
                     }
                     R.styleable.GPActionBar_gp_actionbar_back_btn_icon -> {
                         val resId0 = typedArray.getResourceId(currentAttribute, -1)
