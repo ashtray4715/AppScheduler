@@ -1,9 +1,9 @@
 package com.ashtray.appscheduler.database
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.ashtray.appscheduler.common.GPApplication
 
 @Database(entities = [MyTaskEntity::class], version = 1)
 abstract class MyTaskDatabase: RoomDatabase() {
@@ -11,16 +11,23 @@ abstract class MyTaskDatabase: RoomDatabase() {
     companion object {
         private const val DATABASE_NAME = "task_list_db"
 
-        private val database: MyTaskDatabase by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-            Room.databaseBuilder(
-                GPApplication.getInstance(),
-                MyTaskDatabase::class.java,
-                DATABASE_NAME
-            ).build()
-        }
+        @Volatile
+        private var INSTANCE: MyTaskDatabase? = null
 
-        fun getInstance(): MyTaskDatabase {
-            return database
+        fun getInstance(context: Context): MyTaskDatabase {
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        MyTaskDatabase::class.java,
+                        DATABASE_NAME
+                    ).fallbackToDestructiveMigration().build()
+                    INSTANCE = instance
+                }
+                return instance
+            }
         }
     }
 

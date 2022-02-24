@@ -1,13 +1,14 @@
 package com.ashtray.appscheduler.features.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.repository.MyRepository
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = MyRepository.INSTANCE
+    private val repository = MyRepository.getInstance(application)
 
     fun getRemainingTaskListLiveData(): LiveData<List<MyTaskEntity>> {
         return repository.getRemainingTaskLiveData()

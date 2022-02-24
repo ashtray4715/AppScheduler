@@ -1,12 +1,13 @@
 package com.ashtray.appscheduler.features.history
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.repository.MyRepository
 
-class HistoryViewModel: ViewModel() {
-    private val repository = MyRepository.INSTANCE
+class HistoryViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = MyRepository.getInstance(application)
 
     fun getCompletedTaskListLiveData(): LiveData<List<MyTaskEntity>> {
         return repository.getCompletedTaskLiveData()

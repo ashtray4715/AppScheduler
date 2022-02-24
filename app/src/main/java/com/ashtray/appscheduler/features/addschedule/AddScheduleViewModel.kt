@@ -1,12 +1,13 @@
 package com.ashtray.appscheduler.features.addschedule
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.repository.MyRepository
 
-class AddScheduleViewModel: ViewModel() {
-    private val repository = MyRepository.INSTANCE
+class AddScheduleViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = MyRepository.getInstance(application)
 
     fun addNewSchedule(entity: MyTaskEntity) {
         repository.insertNewTask(entity)

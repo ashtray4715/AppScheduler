@@ -1,20 +1,32 @@
 package com.ashtray.appscheduler.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.ashtray.appscheduler.common.GPAsyncExecutor
 import com.ashtray.appscheduler.database.MyTaskDatabase
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.common.GPLog.d
 
-class MyRepository {
+class MyRepository(context: Context) {
 
     companion object {
         private const val TAG = "MyRepository"
-        val INSTANCE = MyRepository()
+        private var INSTANCE: MyRepository? = null
+
+        fun getInstance(context: Context): MyRepository {
+            synchronized(this) {
+                var currentInstance = INSTANCE
+                if(currentInstance == null) {
+                    currentInstance = MyRepository(context)
+                    INSTANCE = currentInstance
+                }
+                return currentInstance
+            }
+        }
     }
 
     private val asyncExecutor = GPAsyncExecutor()
-    private val myTaskDao = MyTaskDatabase.getInstance().getDao()
+    private val myTaskDao = MyTaskDatabase.getInstance(context).getDao()
     private var completedTasks = myTaskDao.getAllTheCompletedTask()
     private var remainingTasks = myTaskDao.getAllTheRemainingTask()
 
@@ -33,6 +45,13 @@ class MyRepository {
         asyncExecutor.executeAsync {
             d(TAG, "deleteMultipleTask: executing..")
             myTaskDao.deleteMultipleTask(isDone)
+        }
+    }
+
+    fun markTaskAsCompleted(startTime: Long) {
+        asyncExecutor.executeAsync {
+            d(TAG, "markTaskAsCompleted: executing..")
+            myTaskDao.markTaskAsComplete(startTime)
         }
     }
 
