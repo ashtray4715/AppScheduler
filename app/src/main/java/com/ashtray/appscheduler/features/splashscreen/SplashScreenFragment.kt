@@ -17,6 +17,9 @@ import com.ashtray.appscheduler.databinding.FragmentSplashScreenBinding
 import com.ashtray.appscheduler.features.home.HomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.provider.Settings
+import com.ashtray.appscheduler.features.permissionpage.PermissionFragment
+
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenFragment: GPFragment() {
@@ -74,11 +77,12 @@ class SplashScreenFragment: GPFragment() {
         if(splashTaskCompletedCount == 3) {
             lifecycleScope.launch(Dispatchers.Main) {
                 changeFragment(
-                    HomeFragment.newInstance(),
-                    TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT
+                    when(Settings.canDrawOverlays(context)) {
+                        true -> HomeFragment.newInstance()
+                        else -> PermissionFragment.newInstance()
+                    }, TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT
                 )
             }
         }
     }
-
 }
