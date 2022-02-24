@@ -17,6 +17,7 @@ class GPDateTime {
 
     var hourValue: String
     var minuteValue: String
+    var secondValue: String
     var timeString: String
 
     var dateTimeString: String
@@ -28,11 +29,12 @@ class GPDateTime {
 
         hourValue = dateTimeString.substring(0, 2)
         minuteValue = dateTimeString.substring(3, 5)
-        timeString = "$hourValue:$minuteValue"
+        secondValue = dateTimeString.substring(6, 8)
+        timeString = "$hourValue:$minuteValue:$secondValue"
 
-        dateValue = dateTimeString.substring(6, 8)
-        monthValue = dateTimeString.substring(9, 11)
-        yearValue = dateTimeString.substring(12,16)
+        dateValue = dateTimeString.substring(9, 11)
+        monthValue = dateTimeString.substring(12, 14)
+        yearValue = dateTimeString.substring(15,19)
         dateString = "$dateValue-$monthValue-$yearValue"
     }
 
@@ -48,6 +50,7 @@ class GPDateTime {
         val timeContainer = timeString.split(":")
         hourValue = timeContainer[0]
         minuteValue = timeContainer[1]
+        secondValue = timeContainer[2]
 
         dateTimeString = "$timeString $dateString"
         dateTimeLong = convertDateToMilliseconds(dateTimeString)
@@ -55,7 +58,7 @@ class GPDateTime {
 
     private fun convertDateToMilliseconds(dateTimeStringValue: String): Long {
         val dateObject = try {
-            val format = SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.ENGLISH)
+            val format = SimpleDateFormat("HH:mm:ss dd-MM-yyyy", Locale.ENGLISH)
             format.parse(dateTimeStringValue)
         } catch (e: Exception) {
             GPLog.e(TAG, "convertTimeToMilliseconds: Problem occurs [${e.message}]")
@@ -66,7 +69,7 @@ class GPDateTime {
     }
 
     private fun convertMillisecondsToDate(dateTimeLongValue: Long): String {
-        val format = SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.ENGLISH)
+        val format = SimpleDateFormat("HH:mm:ss dd-MM-yyyy", Locale.ENGLISH)
         return format.format(Date(dateTimeLongValue))
     }
 
@@ -75,6 +78,7 @@ class GPDateTime {
                 "[dateTimeString:$dateTimeString]" +
                 "[hour:$hourValue]" +
                 "[minute:$minuteValue]" +
+                "[second:$secondValue]" +
                 "[year:$yearValue]" +
                 "[month:$monthValue]" +
                 "[date:$dateValue]" +

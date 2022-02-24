@@ -188,7 +188,7 @@ class AddScheduleFragment: GPFragment() {
 
 
 
-        d(TAG, "scheduleTask: broadcast id value = ${(myTaskEntity.startTime / 10000).toInt()}")
+        d(TAG, "scheduleTask: broadcast id value = ${myTaskEntity.startTime.toInt()}")
 
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         val intent = Intent(context, GPTaskExecutor::class.java).apply {
@@ -197,7 +197,7 @@ class AddScheduleFragment: GPFragment() {
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            (myTaskEntity.startTime / 10000).toInt(),
+            myTaskEntity.startTime.toInt(),
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -224,7 +224,7 @@ class AddScheduleFragment: GPFragment() {
     private fun getUserSelectedTime(): String? {
         val startTime = binding.tvTimeValue.text.toString()
         return try {
-            SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(startTime)
+            SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(startTime)
             startTime
         } catch (e: Exception) {
             e(TAG, "saveButtonPressed: time string parsing error")
