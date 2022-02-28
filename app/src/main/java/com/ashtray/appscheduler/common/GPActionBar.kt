@@ -50,14 +50,6 @@ class GPActionBar(
         this.menuListener1 = menuListener1
     }
 
-    fun setMenuListener2(menuListener2: OnClickListener?) {
-        this.menuListener2 = menuListener2
-    }
-
-    fun setTextOptionListener(textOptionListener: OnClickListener?) {
-        this.textOptionListener = textOptionListener
-    }
-
     private fun setActionBarTitle(title: String?) {
         tvTitle?.text = title
     }
