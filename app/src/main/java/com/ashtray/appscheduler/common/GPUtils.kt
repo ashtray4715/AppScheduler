@@ -72,15 +72,9 @@ class GPUtils {
     }
 
     fun cancelSchedule(context: Context?, taskEntity: MyTaskEntity): Boolean {
-        val gpDateTime1 = GPDateTime(taskEntity.startTime)
-        d(TAG, "cancelSchedule1: $gpDateTime1")
-
-        val gpDateTime2 = GPDateTime(gpDateTime1.dateString, gpDateTime1.timeString)
-        d(TAG, "cancelSchedule2: $gpDateTime2")
-
-        val gpDateTime3 = GPDateTime(gpDateTime2.dateTimeLong)
-        d(TAG, "cancelSchedule3: $gpDateTime3")
-
+        d(TAG, "cancelSchedule: pkgName = ${taskEntity.pkgName}")
+        val taskDateTime = GPDateTime(taskEntity.startTime).dateTimeString
+        d(TAG, "cancelSchedule: time = $taskDateTime")
         val broadCastId = taskEntity.startTime.toInt()
         d(TAG, "cancelSchedule: broadcast id value = $broadCastId")
 
@@ -100,15 +94,9 @@ class GPUtils {
     }
 
     fun addSchedule(context: Context?, taskEntity: MyTaskEntity): Boolean {
-        val gpDateTime1 = GPDateTime(taskEntity.startTime)
-        d(TAG, "addSchedule1: $gpDateTime1")
-
-        val gpDateTime2 = GPDateTime(gpDateTime1.dateString, gpDateTime1.timeString)
-        d(TAG, "addSchedule2: $gpDateTime2")
-
-        val gpDateTime3 = GPDateTime(gpDateTime2.dateTimeLong)
-        d(TAG, "addSchedule3: $gpDateTime3")
-
+        d(TAG, "addSchedule: pkgName = ${taskEntity.pkgName}")
+        val taskDateTime = GPDateTime(taskEntity.startTime).dateTimeString
+        d(TAG, "addSchedule: time = $taskDateTime")
         val broadCastId = taskEntity.startTime.toInt()
         d(TAG, "addSchedule: broadcast id value = $broadCastId")
 

@@ -19,14 +19,8 @@ import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 import com.ashtray.appscheduler.database.MyTaskEntity
 import java.text.SimpleDateFormat
 import java.util.*
-import android.app.AlarmManager
 
-import android.app.PendingIntent
-import android.content.Context
-
-import android.content.Intent
 import com.ashtray.appscheduler.common.*
-
 
 class AddScheduleFragment: GPFragment() {
 
@@ -127,7 +121,7 @@ class AddScheduleFragment: GPFragment() {
             e(TAG, "saveButtonPressed: time slot already booked error")
             return
         }
-        if(scheduleTask(myNewTask)) {
+        if(GPUtils().addSchedule(context, myNewTask)) {
             viewModel.addNewSchedule(myNewTask)
             showToastMessage("Insertion done")
             changeFragment(this, TransactionType.REMOVE_FRAGMENT)
@@ -174,40 +168,6 @@ class AddScheduleFragment: GPFragment() {
         d(TAG, "timeGotSelected: [time=${timeValue}]")
         binding.tvTimeValue.text = timeValue
 
-    }
-
-    private fun scheduleTask(myTaskEntity: MyTaskEntity): Boolean {
-        val gpDateTime1 = GPDateTime(myTaskEntity.startTime)
-        d(TAG, "scheduleTask1: $gpDateTime1")
-
-        val gpDateTime2 = GPDateTime(gpDateTime1.dateString, gpDateTime1.timeString)
-        d(TAG, "scheduleTask2: $gpDateTime2")
-
-        val gpDateTime3 = GPDateTime(gpDateTime2.dateTimeLong)
-        d(TAG, "scheduleTask3: $gpDateTime3")
-
-
-
-        d(TAG, "scheduleTask: broadcast id value = ${myTaskEntity.startTime.toInt()}")
-
-        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
-        val intent = Intent(context, GPTaskExecutor::class.java).apply {
-            putExtra(GPConst.PK_APP_ID, myTaskEntity.pkgName)
-            putExtra(GPConst.PK_START_TIME, myTaskEntity.startTime.toString())
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            myTaskEntity.startTime.toInt(),
-            intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager?.cancel(pendingIntent)
-        alarmManager?.setExact(
-            AlarmManager.RTC_WAKEUP,
-            myTaskEntity.startTime,
-            pendingIntent
-        )
-        return alarmManager != null
     }
 
     private fun getUserSelectedDate(): String? {

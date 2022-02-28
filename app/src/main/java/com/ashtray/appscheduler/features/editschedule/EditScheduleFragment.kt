@@ -64,14 +64,14 @@ class EditScheduleFragment : GPFragment() {
     private fun drawPreviouslySelectedTaskInfo() {
         arguments?.let { arg ->
             arg.getString(GPConst.PK_APP_ID)?.let { appId ->
-                d(TAG, "drawPreviouslySelectedTaskInfo: showing app info")
+                d(TAG, "drawPreviouslySelectedTaskInfo: $appId")
                 val appName = GPUtils().getAppNameFromPkgName(context, appId)
                 binding.tvAppName.text = appName
                 binding.tvAppPckName.text = appId
                 GPUtils().showAppIcon(binding.ivAppIcon, appId, context)
             }
             arg.getString(GPConst.PK_START_TIME)?.let { startTime ->
-                d(TAG, "drawPreviouslySelectedTaskInfo: showing date time info")
+                d(TAG, "drawPreviouslySelectedTaskInfo: $startTime")
                 val combinedTime = startTime.split(" ")
                 binding.tvTimeValue.text = combinedTime[0]
                 binding.tvDateValue.text = combinedTime[1]

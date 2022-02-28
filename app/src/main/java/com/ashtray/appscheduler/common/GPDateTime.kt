@@ -10,18 +10,18 @@ class GPDateTime {
         private const val TAG = "GPDateTime"
     }
 
-    val dateValue: String
-    var monthValue: String
-    var yearValue: String
-    var dateString: String
+    private val dateValue: String
+    private val monthValue: String
+    private val yearValue: String
+    private val dateString: String
 
-    var hourValue: String
-    var minuteValue: String
-    var secondValue: String
-    var timeString: String
+    private val hourValue: String
+    private val minuteValue: String
+    private val secondValue: String
+    private val timeString: String
 
-    var dateTimeString: String
-    var dateTimeLong: Long = 0L
+    val dateTimeString: String
+    val dateTimeLong: Long
 
     constructor(dateTimeLongValue: Long) {
         dateTimeLong = dateTimeLongValue
