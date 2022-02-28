@@ -228,7 +228,7 @@ class AddScheduleFragment: GPFragment() {
             SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(startTime)
             startTime
         } catch (e: Exception) {
-            e(TAG, "saveButtonPressed: time string parsing error")
+            e(TAG, "getUserSelectedTime: time string parsing error")
             e.printStackTrace()
             null
         }
