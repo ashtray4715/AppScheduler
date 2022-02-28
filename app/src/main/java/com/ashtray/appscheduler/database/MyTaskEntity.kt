@@ -6,7 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "task_table")
 data class MyTaskEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "task_id")
+    var taskId: Int,
+
     @ColumnInfo(name = "start_time")
     var startTime: Long,
 

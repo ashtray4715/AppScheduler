@@ -40,37 +40,34 @@ class MyRepository(context: Context) {
 
     fun insertNewTask(entity: MyTaskEntity) {
         asyncExecutor.executeAsync {
-            d(TAG, "insertNewTask: executing..")
+            d(TAG, "insertNewTask: executing.. taskId = ${entity.taskId}")
             myTaskDao.insertNewTask(entity)
         }
     }
 
     fun deleteMultipleTask(isDone: Boolean) {
         asyncExecutor.executeAsync {
-            d(TAG, "deleteMultipleTask: executing..")
+            d(TAG, "deleteMultipleTask: executing.. isDone = $isDone")
             myTaskDao.deleteMultipleTask(isDone)
         }
     }
 
-    fun deleteSingleTask(startTime: Long) {
+    fun deleteSingleTask(taskId: Int) {
         asyncExecutor.executeAsync {
-            d(TAG, "deleteSingleTask: executing..")
-            myTaskDao.deleteSingleTask(startTime)
+            d(TAG, "deleteSingleTask: executing.. taskId = $taskId")
+            myTaskDao.deleteSingleTask(taskId)
         }
     }
 
-    fun markTaskAsCompleted(startTime: Long) {
+    fun markTaskAsCompleted(taskId: Int) {
         asyncExecutor.executeAsync {
-            d(TAG, "markTaskAsCompleted: executing..")
-            myTaskDao.markTaskAsComplete(startTime)
+            d(TAG, "markTaskAsCompleted: executing.. taskId = $taskId")
+            myTaskDao.markTaskAsComplete(taskId)
         }
     }
 
-    fun updateExistingTask(pTime: Long, nTime: Long) {
-        asyncExecutor.executeAsync {
-            d(TAG, "updateExistingTask: executing..")
-            myTaskDao.updateExistingTask(pTime, nTime)
-        }
+    fun getTaskObject(taskId: Int): MyTaskEntity? {
+        return myTaskDao.getTaskObject(taskId)
     }
 
 }
