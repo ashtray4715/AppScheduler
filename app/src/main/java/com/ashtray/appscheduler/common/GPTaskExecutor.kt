@@ -8,12 +8,12 @@ import android.widget.Toast
 import com.ashtray.appscheduler.repository.MyRepository
 import kotlinx.coroutines.*
 
-@DelicateCoroutinesApi
 class GPTaskExecutor: BroadcastReceiver() {
     companion object {
         private const val TAG = "[mg] GPTaskExecutor"
     }
 
+    @DelicateCoroutinesApi
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i(TAG, "onBroadcastReceive: execution started")
         val taskId = intent?.getIntExtra(GPConst.PK_TASK_ID, -1) ?: let {
@@ -29,6 +29,7 @@ class GPTaskExecutor: BroadcastReceiver() {
         Log.i(TAG, "onBroadcastReceive: execution done")
     }
 
+    @DelicateCoroutinesApi
     private fun startExecuting(context: Context, taskId: Int) {
         GlobalScope.launch(Dispatchers.IO) {
             Log.i(TAG, "onBroadcastReceive: taskId = $taskId")
