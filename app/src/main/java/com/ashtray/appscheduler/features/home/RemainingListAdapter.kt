@@ -39,7 +39,7 @@ class RemainingListAdapter(
     }
 
     override fun onBindViewHolder(holder: RemainingListViewHolder, position: Int) {
-        holder.displayAppInfo(context, remainingTaskList[position], position)
+        holder.displayAppInfo(context, remainingTaskList[position])
     }
 
     override fun getItemCount(): Int {

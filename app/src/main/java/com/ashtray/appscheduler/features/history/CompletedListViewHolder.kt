@@ -9,7 +9,7 @@ import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPUtils
 
 class CompletedListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun displayAppInfo(context: Context?, taskInfo: CompletedTaskInfo, position: Int) {
+    fun displayAppInfo(context: Context?, taskInfo: CompletedTaskInfo) {
         itemView.findViewById<TextView>(R.id.tv_app_name).text = taskInfo.appName
         itemView.findViewById<TextView>(R.id.tv_app_pck_name).text = taskInfo.appPkgName
         itemView.findViewById<TextView>(R.id.tv_start_time).text = taskInfo.startTime

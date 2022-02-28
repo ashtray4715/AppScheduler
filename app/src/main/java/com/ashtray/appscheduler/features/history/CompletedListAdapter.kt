@@ -31,7 +31,7 @@ class CompletedListAdapter(
     }
 
     override fun onBindViewHolder(holder: CompletedListViewHolder, position: Int) {
-        holder.displayAppInfo(context, completedTaskList[position], position)
+        holder.displayAppInfo(context, completedTaskList[position])
     }
 
     override fun getItemCount(): Int {

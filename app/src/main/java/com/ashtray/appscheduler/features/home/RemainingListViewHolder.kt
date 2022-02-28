@@ -23,7 +23,7 @@ class RemainingListViewHolder(
         fun onItemLongPressed(position: Int)
     }
 
-    fun displayAppInfo(context: Context?, taskInfo: RemainingTaskInfo, position: Int) {
+    fun displayAppInfo(context: Context?, taskInfo: RemainingTaskInfo) {
         itemView.findViewById<TextView>(R.id.tv_app_name).text = taskInfo.appName
         itemView.findViewById<TextView>(R.id.tv_app_pck_name).text = taskInfo.appPkgName
         itemView.findViewById<TextView>(R.id.tv_start_time).text = taskInfo.startTime
