@@ -23,15 +23,13 @@ class GPRebootListener: BroadcastReceiver() {
     private fun performReScheduling(context: Context?) {
         GlobalScope.launch(Dispatchers.IO) {
             context?.let { mContext ->
-                Log.i(TAG, "onBroadcastReceive: setting alarms")
+                Log.i(TAG, "performReScheduling: started")
                 val myList = MyRepository.getInstance(mContext).getRemainingTaskList()
-                Log.i(TAG, "onBroadcastReceive: total items found ${myList.size}")
-                withContext(Dispatchers.Main) {
-                    for (item in myList) {
-                        GPUtils().addSchedule(mContext, item)
-                    }
+                Log.i(TAG, "performReScheduling: total items found ${myList.size}")
+                for (item in myList) {
+                    GPUtils().addSchedule(mContext, item)
                 }
-                Log.i(TAG, "onBroadcastReceive: all items rescheduled")
+                Log.i(TAG, "performReScheduling: all done")
             }
         }
     }
