@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPFragment
-import com.ashtray.appscheduler.common.GPLog
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.databinding.FragmentPermissionBinding
@@ -59,7 +58,7 @@ class PermissionFragment: GPFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        GPLog.d(TAG, "onCreateView: called")
+        d(TAG, "onCreateView: called")
         viewModel = ViewModelProvider(this).get(PermissionViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_permission, container, false)
         return binding.root

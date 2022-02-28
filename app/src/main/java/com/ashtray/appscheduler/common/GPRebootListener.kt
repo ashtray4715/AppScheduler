@@ -9,14 +9,20 @@ import android.util.Log
 import com.ashtray.appscheduler.repository.MyRepository
 import kotlinx.coroutines.*
 
+@DelicateCoroutinesApi
 class GPRebootListener: BroadcastReceiver() {
     companion object {
         private const val TAG = "[mg] GPRebootListener"
     }
 
-    @DelicateCoroutinesApi
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i(TAG, "onBroadcastReceived: phone rebooted")
+        intent?.action?.equals("android.intent.action.BOOT_COMPLETED")?.let {
+            performReScheduling(context)
+        }
+    }
+
+    private fun performReScheduling(context: Context?) {
         GlobalScope.launch(Dispatchers.IO) {
             context?.let {
                 Log.i(TAG, "onBroadcastReceive: setting alarms")

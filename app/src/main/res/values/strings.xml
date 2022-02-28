@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">AppScheduler</string>
-    <string name="useless">Useless</string>
     <string name="want_to_enable_log">yes</string>
 </resources>

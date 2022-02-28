@@ -16,16 +16,16 @@
 
         <com.ashtray.appscheduler.common.GPActionBar
             android:id="@+id/action_bar"
-            android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:gp_actionbar_title="Select app"
+            android:layout_alignParentTop="true"
             app:gp_actionbar_back_btn_visibility="true"
-            app:gp_show_action_bar_divider="false"
-            app:gp_menu_item_one_visibility="true"
+            app:gp_actionbar_title="Select app"
             app:gp_menu_item_one_icon="@drawable/ic_save_24"
+            app:gp_menu_item_one_visibility="true"
             app:gp_menu_item_two_visibility="false"
-            app:gp_menu_text_option_visibility="false"/>
+            app:gp_menu_text_option_visibility="false"
+            app:gp_show_action_bar_divider="false" />
 
         <LinearLayout
             android:id="@+id/ll_option_btn"
