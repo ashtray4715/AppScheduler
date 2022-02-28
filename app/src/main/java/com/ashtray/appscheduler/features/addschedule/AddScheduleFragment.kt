@@ -105,12 +105,6 @@ class AddScheduleFragment: GPFragment() {
             return
         }
         val selectedDateTime = GPDateTime(startDate, startTime).dateTimeLong
-        val myNewTask = MyTaskEntity(
-            startTime = selectedDateTime,
-            appName = appName,
-            pkgName = appPkgName,
-            isDone = false
-        )
         if(System.currentTimeMillis() > selectedDateTime) {
             showToastMessage("Select future date")
             e(TAG, "saveButtonPressed: past time selection error")
@@ -121,6 +115,13 @@ class AddScheduleFragment: GPFragment() {
             e(TAG, "saveButtonPressed: time slot already booked error")
             return
         }
+        val myNewTask = MyTaskEntity(
+            taskId = GPSharedPref(context).getNewId(),
+            startTime = selectedDateTime,
+            appName = appName,
+            pkgName = appPkgName,
+            isDone = false
+        )
         if(GPUtils().addSchedule(context, myNewTask)) {
             viewModel.addNewSchedule(myNewTask)
             showToastMessage("Insertion done")

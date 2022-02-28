@@ -13,12 +13,12 @@ class GPDateTime {
     private val dateValue: String
     private val monthValue: String
     private val yearValue: String
-    private val dateString: String
+    val dateString: String
 
     private val hourValue: String
     private val minuteValue: String
     private val secondValue: String
-    private val timeString: String
+    val timeString: String
 
     val dateTimeString: String
     val dateTimeLong: Long

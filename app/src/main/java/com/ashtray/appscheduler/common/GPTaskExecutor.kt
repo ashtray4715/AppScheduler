@@ -6,28 +6,52 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.ashtray.appscheduler.repository.MyRepository
+import kotlinx.coroutines.*
 
+@DelicateCoroutinesApi
 class GPTaskExecutor: BroadcastReceiver() {
     companion object {
         private const val TAG = "[mg] GPTaskExecutor"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val appId = intent?.getStringExtra(GPConst.PK_APP_ID) ?: let {
-            Log.e(TAG, "onBroadcastReceive: app id not found [RETURN]")
+        Log.i(TAG, "onBroadcastReceive: execution started")
+        val taskId = intent?.getIntExtra(GPConst.PK_TASK_ID, -1) ?: let {
+            Log.e(TAG, "onBroadcastReceive: task id not found [RETURN]")
             return
         }
-        val startTime = intent.getStringExtra(GPConst.PK_START_TIME) ?: let {
-            Log.e(TAG, "onBroadcastReceive: start time not found [RETURN]")
+        context?.let { mContext ->
+            startExecuting(mContext, taskId)
+        } ?: let {
+            Log.e(TAG, "onBroadcastReceive: context not found[RETURN]")
             return
         }
-        Log.i(TAG, "onBroadcastReceive: appId = $appId")
-        Log.i(TAG, "onBroadcastReceive: startTime = $startTime")
-        Log.i(TAG, "onBroadcastReceive: startTime = ${GPDateTime(startTime.toLong()).dateTimeString}")
+        Log.i(TAG, "onBroadcastReceive: execution done")
+    }
 
+    private fun startExecuting(context: Context, taskId: Int) {
+        GlobalScope.launch(Dispatchers.IO) {
+            Log.i(TAG, "onBroadcastReceive: taskId = $taskId")
+            val mRepository = MyRepository.getInstance(context)
+            mRepository.getTaskObject(taskId)?.let { mEntity ->
+                val startTimeString = GPDateTime(mEntity.startTime).dateTimeString
+                Log.i(TAG, "onBroadcastReceive: appId = ${mEntity.pkgName}")
+                Log.i(TAG, "onBroadcastReceive: sTime = $startTimeString")
+                withContext(Dispatchers.Main) {
+                    openApp(context, mEntity.pkgName)
+                }
+                mRepository.markTaskAsCompleted(taskId)
+            } ?: let {
+                Toast.makeText(context, "app not launched", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "onBroadcastReceive: task object not found [RETURN]")
+            }
+        }
+    }
+
+    private fun openApp(context: Context, pkgName: String) {
         try {
-            context?.startActivity(
-                context.packageManager?.getLaunchIntentForPackage(appId)?.apply {
+            context.startActivity(
+                context.packageManager?.getLaunchIntentForPackage(pkgName)?.apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
@@ -38,12 +62,5 @@ class GPTaskExecutor: BroadcastReceiver() {
             e.printStackTrace()
             Toast.makeText(context, "app not launched", Toast.LENGTH_LONG).show()
         }
-
-        context?.let {
-            Log.i(TAG, "onBroadcastReceive: updating database = $startTime")
-            val myRepository = MyRepository.getInstance(context)
-            myRepository.markTaskAsCompleted(startTime.toLong())
-        }
-        Log.i(TAG, "onBroadcastReceive: execution done")
     }
 }

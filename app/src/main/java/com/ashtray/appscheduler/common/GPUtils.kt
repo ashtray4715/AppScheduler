@@ -59,34 +59,32 @@ class GPUtils {
         }
     }
 
-    private fun checkIfItemInTheList(list: List<MyTaskEntity>, startTime: Long): Boolean {
+    private fun checkIfItemInTheList(list: List<MyTaskEntity>, cId: Int): Boolean {
         for(item in list) {
-            if(item.startTime == startTime) {
+            if(item.taskId == cId) {
                 return true
             }
         }
         return false
     }
 
-    fun checkIfItemIsNotInTheList(list: List<MyTaskEntity>, startTime: Long): Boolean {
-        return !checkIfItemInTheList(list, startTime)
+    fun checkIfItemIsNotInTheList(list: List<MyTaskEntity>, cId: Int): Boolean {
+        return !checkIfItemInTheList(list, cId)
     }
 
     fun cancelSchedule(context: Context?, taskEntity: MyTaskEntity): Boolean {
         d(TAG, "cancelSchedule: pkgName = ${taskEntity.pkgName}")
         val taskDateTime = GPDateTime(taskEntity.startTime).dateTimeString
         d(TAG, "cancelSchedule: time = $taskDateTime")
-        val broadCastId = taskEntity.startTime.toInt()
-        d(TAG, "cancelSchedule: broadcast id value = $broadCastId")
+        d(TAG, "cancelSchedule: id value = ${taskEntity.taskId}")
 
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         val intent = Intent(context, GPTaskExecutor::class.java).apply {
-            putExtra(GPConst.PK_APP_ID, taskEntity.pkgName)
-            putExtra(GPConst.PK_START_TIME, taskEntity.startTime.toString())
+            putExtra(GPConst.PK_TASK_ID, taskEntity.taskId)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            broadCastId,
+            taskEntity.taskId,
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -98,17 +96,15 @@ class GPUtils {
         d(TAG, "addSchedule: pkgName = ${taskEntity.pkgName}")
         val taskDateTime = GPDateTime(taskEntity.startTime).dateTimeString
         d(TAG, "addSchedule: time = $taskDateTime")
-        val broadCastId = taskEntity.startTime.toInt()
-        d(TAG, "addSchedule: broadcast id value = $broadCastId")
+        d(TAG, "addSchedule: id value = ${taskEntity.taskId}")
 
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         val intent = Intent(context, GPTaskExecutor::class.java).apply {
-            putExtra(GPConst.PK_APP_ID, taskEntity.pkgName)
-            putExtra(GPConst.PK_START_TIME, taskEntity.startTime.toString())
+            putExtra(GPConst.PK_TASK_ID, taskEntity.taskId)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            broadCastId,
+            taskEntity.taskId,
             intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )

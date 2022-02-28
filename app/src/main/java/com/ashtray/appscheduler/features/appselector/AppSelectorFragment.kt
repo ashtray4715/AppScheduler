@@ -91,6 +91,7 @@ class AppSelectorFragment: GPFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             actionBar.setBackListener { handleBackButtonPressed() }
+            actionBar.setMenuListener1 { appSelectedBtnPressed() }
             cancelButton.setOnClickListener { handleBackButtonPressed() }
             selectButton.setOnClickListener { appSelectedBtnPressed() }
         }

@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.*
 import com.ashtray.appscheduler.common.GPLog.d
+import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.database.MyTaskEntity
 import com.ashtray.appscheduler.databinding.FragmentEditScheduleBinding
 import com.ashtray.appscheduler.features.dateselector.DateSelectorFragment
+import com.ashtray.appscheduler.features.splashscreen.SplashScreenFragment
 import com.ashtray.appscheduler.features.timeselector.TimeSelectorFragment
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,10 +24,9 @@ class EditScheduleFragment : GPFragment() {
     companion object {
         private const val TAG = "EditScheduleFragment"
 
-        fun newInstance(appPkgName: String, startTime: String): EditScheduleFragment {
+        fun newInstance(taskId: Int): EditScheduleFragment {
             val args = Bundle()
-            args.putString(GPConst.PK_APP_ID, appPkgName)
-            args.putString(GPConst.PK_START_TIME, startTime)
+            args.putInt(GPConst.PK_TASK_ID, taskId)
             val fragment = EditScheduleFragment()
             fragment.arguments = args
             return fragment
@@ -36,7 +37,7 @@ class EditScheduleFragment : GPFragment() {
 
     private lateinit var viewModel: EditScheduleViewModel
     private lateinit var binding: FragmentEditScheduleBinding
-    private var selectedTaskStartTime: Long = -1
+    private lateinit var selectedTask: MyTaskEntity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +52,7 @@ class EditScheduleFragment : GPFragment() {
             container,
             false
         )
+        initializeSelectedTask()
         drawPreviouslySelectedTaskInfo()
         setFragmentResultListener(GPConst.PK_DATE) { key, bundle ->
             dateGotSelected(bundle.getString(key))
@@ -61,28 +63,30 @@ class EditScheduleFragment : GPFragment() {
         return binding.root
     }
 
-    private fun drawPreviouslySelectedTaskInfo() {
-        arguments?.let { arg ->
-            arg.getString(GPConst.PK_APP_ID)?.let { appId ->
-                d(TAG, "drawPreviouslySelectedTaskInfo: $appId")
-                val appName = GPUtils().getAppNameFromPkgName(context, appId)
-                binding.tvAppName.text = appName
-                binding.tvAppPckName.text = appId
-                GPUtils().showAppIcon(binding.ivAppIcon, appId, context)
-            }
-            arg.getString(GPConst.PK_START_TIME)?.let { startTime ->
-                d(TAG, "drawPreviouslySelectedTaskInfo: $startTime")
-                val combinedTime = startTime.split(" ")
-                binding.tvTimeValue.text = combinedTime[0]
-                binding.tvDateValue.text = combinedTime[1]
-                selectedTaskStartTime = GPDateTime(
-                    combinedTime[1],
-                    combinedTime[0]
-                ).dateTimeLong
-            }
+    private fun initializeSelectedTask() {
+        val taskId = arguments?.getInt(GPConst.PK_TASK_ID, -1) ?: let {
+            e(TAG, "drawPreviouslySelectedTaskInfo: task id not found")
+            return
         }
-        if(selectedTaskStartTime == -1L) {
-            showToastMessage("selected time parsing error")
+        viewModel.getTaskObject(taskId)?.let { currentTask ->
+            selectedTask = currentTask
+        }
+    }
+
+    private fun drawPreviouslySelectedTaskInfo() {
+        try {
+            val gpDateTime = GPDateTime(selectedTask.startTime)
+            binding.apply {
+                tvAppName.text = selectedTask.appName
+                tvAppPckName.text = selectedTask.pkgName
+                tvTimeValue.text = gpDateTime.timeString
+                tvDateValue.text = gpDateTime.dateString
+                GPUtils().showAppIcon(ivAppIcon, selectedTask.pkgName, context)
+            }
+        } catch (e: Exception) {
+            showToastMessage("selected task not found")
+            e(TAG, "drawPreviouslySelectedTaskInfo: selected task not found")
+            e.printStackTrace()
             changeFragment(this, TransactionType.REMOVE_FRAGMENT)
             return
         }
@@ -125,9 +129,12 @@ class EditScheduleFragment : GPFragment() {
             cancelButton.setOnClickListener { handleBackButtonPressed() }
         }
         viewModel.getRemainingTaskListLiveData().observe(viewLifecycleOwner, { list ->
-            if(GPUtils().checkIfItemIsNotInTheList(list, selectedTaskStartTime)) {
+            if(GPUtils().checkIfItemIsNotInTheList(list, selectedTask.taskId)) {
                 showToastMessage("Task state changed")
-                changeFragment(this, TransactionType.REMOVE_FRAGMENT)
+                changeFragment(
+                    SplashScreenFragment.newInstance(),
+                    TransactionType.CLEAR_ALL_AND_ADD_NEW_FRAGMENT
+                )
             }
         })
     }
@@ -167,37 +174,32 @@ class EditScheduleFragment : GPFragment() {
         val selectedDateTime = GPDateTime(startDate, startTime).dateTimeLong
         if(System.currentTimeMillis() > selectedDateTime) {
             showToastMessage("Select future date")
-            GPLog.e(TAG, "saveButtonPressed: past time selection error")
+            e(TAG, "saveButtonPressed: past time selection error")
             return
         }
         if(selectedTimeSlotAlreadyBooked(selectedDateTime)) {
             showToastMessage("Time slot already booked")
-            GPLog.e(TAG, "saveButtonPressed: time slot already booked error")
+            e(TAG, "saveButtonPressed: time slot already booked error")
             return
         }
         val newTask = MyTaskEntity(
+            taskId = GPSharedPref(context).getNewId(),
             startTime = selectedDateTime,
             appName = appName,
             pkgName = appPkgName,
             isDone = false
         )
-        val previousTask = MyTaskEntity(
-            startTime = selectedTaskStartTime,
-            appName = appName,
-            pkgName = appPkgName,
-            isDone = false
-        )
-        if(GPUtils().cancelSchedule(context, previousTask) and
-            GPUtils().addSchedule(context, newTask)) {
-            viewModel.updateExistingTask(
-                selectedTaskStartTime,
-                selectedDateTime
-            )
-            showToastMessage("Task updated")
-            changeFragment(this, TransactionType.REMOVE_FRAGMENT)
-        } else {
-            showToastMessage("Update failed")
-        }
+
+        val cancelStatus = GPUtils().cancelSchedule(context, selectedTask)
+        d(TAG, "saveButtonPressed: cancel status = $cancelStatus")
+        viewModel.deleteSingleTask(selectedTask.taskId)
+
+        val insertStatus = GPUtils().addSchedule(context, newTask)
+        d(TAG, "saveButtonPressed: insert status = $insertStatus")
+        viewModel.addNewTask(newTask)
+
+        showToastMessage("Task updated")
+        changeFragment(this, TransactionType.REMOVE_FRAGMENT)
     }
 
     private fun dateGotSelected(dateValue: String?) {
@@ -216,7 +218,7 @@ class EditScheduleFragment : GPFragment() {
             SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse(startDate)
             startDate
         } catch (e: Exception) {
-            GPLog.e(TAG, "getSelectedDate: date string parsing error")
+            e(TAG, "getSelectedDate: date string parsing error")
             e.printStackTrace()
             null
         }
@@ -228,7 +230,7 @@ class EditScheduleFragment : GPFragment() {
             SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(startTime)
             startTime
         } catch (e: Exception) {
-            GPLog.e(TAG, "getUserSelectedTime: time string parsing error")
+            e(TAG, "getUserSelectedTime: time string parsing error")
             e.printStackTrace()
             null
         }

@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPDateTime
@@ -28,6 +29,8 @@ import com.ashtray.appscheduler.common.GPUtils
 import com.ashtray.appscheduler.features.addschedule.AddScheduleFragment
 import com.ashtray.appscheduler.features.editschedule.EditScheduleFragment
 import com.ashtray.appscheduler.features.history.HistoryFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HomeFragment: GPFragment() {
 
@@ -52,17 +55,23 @@ class HomeFragment: GPFragment() {
             d(TAG, "viewHolderCallBack: onItemPressed called p=$position")
             rAdapter.getItemFromPosition(position)?.let {
                 changeFragment(
-                    EditScheduleFragment.newInstance(it.appPkgName, it.startTime),
+                    EditScheduleFragment.newInstance(it.taskId),
                     TransactionType.ADD_FRAGMENT
                 )
-            } ?: e(TAG, "onItemPressed: no item found in adapter $position")
+            } ?: let {
+                showToastMessage("Restart app")
+                e(TAG, "onItemPressed: no item found in adapter $position")
+            }
         }
 
         override fun onItemLongPressed(position: Int) {
             d(TAG, "viewHolderCallBack: onItemLongPressed called p=$position")
             rAdapter.getItemFromPosition(position)?.let {
-                showDeletePopUp(1L) //todo - here in this line
-            } ?: e(TAG, "onItemLongPressed: no item found in adapter $position")
+                showDeletePopUp(it.taskId)
+            } ?: let {
+                showToastMessage("Restart app")
+                e(TAG, "onItemLongPressed: no item found in adapter $position")
+            }
         }
     }
 
@@ -102,6 +111,7 @@ class HomeFragment: GPFragment() {
             for(item in list) {
                 remainingTaskList.add(
                     RemainingTaskInfo(
+                        taskId = item.taskId,
                         appName = item.appName,
                         appPkgName = item.pkgName,
                         startTime = GPDateTime(item.startTime).dateTimeString
@@ -117,8 +127,8 @@ class HomeFragment: GPFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun showDeletePopUp(startTime: Long) {
-        d(TAG, "showDeletePopUp: called for $startTime")
+    fun showDeletePopUp(taskId: Int) {
+        d(TAG, "showDeletePopUp: called for $taskId")
         val cDialog = Dialog(requireContext()).apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(R.layout.dialog_simple_confirmation)
@@ -145,7 +155,19 @@ class HomeFragment: GPFragment() {
 
         okBtnTv.setOnClickListener {
             d(TAG, "showDeletePopUp: ok pressed")
-            viewModel.deleteSingleTask(startTime)
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.getTaskObject(taskId)?.let {
+                    val cancelStatus = GPUtils().cancelSchedule(context, it)
+                    d(TAG, "showDeletePopUp: cancel status = $cancelStatus")
+                    viewModel.deleteSingleTask(taskId)
+                    showToastMessage("Delete successful")
+                } ?: let {
+                    d(TAG, "showDeletePopUp: delete failed")
+                    showToastMessage("Delete failed")
+                }
+
+            }
+
             cDialog.dismiss()
         }
         cancelBtnTv.setOnClickListener {
