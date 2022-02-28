@@ -67,7 +67,17 @@ class MyRepository(context: Context) {
     }
 
     fun getTaskObject(taskId: Int): MyTaskEntity? {
-        return myTaskDao.getTaskObject(taskId)
+        for(item in remainingTasks.value ?: emptyList()) {
+            if(item.taskId == taskId) {
+                return item
+            }
+        }
+        for(item in completedTasks.value ?: emptyList()) {
+            if(item.taskId == taskId) {
+                return item
+            }
+        }
+        return null
     }
 
 }
