@@ -43,7 +43,6 @@ class GPTaskExecutor: BroadcastReceiver() {
                 }
                 mRepository.markTaskAsCompleted(taskId)
             } ?: let {
-                Toast.makeText(context, "app not launched", Toast.LENGTH_LONG).show()
                 Log.e(TAG, "onBroadcastReceive: task object not found [RETURN]")
             }
         }

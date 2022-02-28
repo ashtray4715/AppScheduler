@@ -23,7 +23,8 @@ abstract class MyTaskDatabase: RoomDatabase() {
                         context.applicationContext,
                         MyTaskDatabase::class.java,
                         DATABASE_NAME
-                    ).fallbackToDestructiveMigration().build()
+                    ).fallbackToDestructiveMigration()
+                        .allowMainThreadQueries().build()
                     INSTANCE = instance
                 }
                 return instance

@@ -14,6 +14,9 @@ interface MyTaskDao {
     @Query("SELECT * FROM task_table WHERE is_done = 0 ORDER BY start_time ASC")
     fun getRemainingTaskList(): List<MyTaskEntity>
 
+    @Query("SELECT * FROM task_table WHERE task_id = :taskId")
+    fun getTaskObject(taskId: Int): MyTaskEntity?
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertNewTask(entityMy: MyTaskEntity)
 
