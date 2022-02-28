@@ -14,8 +14,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getRemainingTaskLiveData()
     }
 
-    fun deleteSingleTask(startTime: Long) {
-        repository.deleteSingleTask(startTime)
+    fun deleteSingleTask(taskId: Int) {
+        repository.deleteSingleTask(taskId)
+    }
+
+    fun getTaskObject(taskId: Int): MyTaskEntity? {
+        return repository.getTaskObject(taskId)
     }
 
 }

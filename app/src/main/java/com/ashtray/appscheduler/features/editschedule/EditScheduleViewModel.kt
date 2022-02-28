@@ -13,7 +13,15 @@ class EditScheduleViewModel(application: Application) : AndroidViewModel(applica
         return repository.getRemainingTaskLiveData()
     }
 
-    fun updateExistingTask(pTime: Long, nTime: Long) {
-        repository.updateExistingTask(pTime, nTime)
+    fun deleteSingleTask(taskId: Int) {
+        repository.deleteSingleTask(taskId)
+    }
+
+    fun addNewTask(entity: MyTaskEntity) {
+        repository.insertNewTask(entity)
+    }
+
+    fun getTaskObject(taskId: Int): MyTaskEntity? {
+        return repository.getTaskObject(taskId)
     }
 }
