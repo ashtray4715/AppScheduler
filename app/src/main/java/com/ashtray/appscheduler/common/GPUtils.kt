@@ -11,6 +11,7 @@ import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.database.MyTaskEntity
+import android.view.Window
 
 class GPUtils {
 
@@ -118,6 +119,13 @@ class GPUtils {
             pendingIntent
         )
         return alarmManager != null
+    }
+
+    fun setWindowBackground(context: Context?, window: Window?, drawableId: Int) {
+        context?.let {
+            val drawable = ContextCompat.getDrawable(it, drawableId)
+            window?.setBackgroundDrawable(drawable)
+        }
     }
 
 }

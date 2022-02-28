@@ -1,5 +1,7 @@
 package com.ashtray.appscheduler.features.home
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import com.ashtray.appscheduler.common.GPFragment
 import com.ashtray.appscheduler.databinding.FragmentHomeBinding
 import android.os.Bundle
@@ -10,14 +12,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.widget.TextView
 
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPDateTime
 import com.ashtray.appscheduler.common.GPLog.d
 import com.ashtray.appscheduler.common.GPLog.e
+import com.ashtray.appscheduler.common.GPUtils
 import com.ashtray.appscheduler.features.addschedule.AddScheduleFragment
 import com.ashtray.appscheduler.features.editschedule.EditScheduleFragment
 import com.ashtray.appscheduler.features.history.HistoryFragment
@@ -54,10 +61,7 @@ class HomeFragment: GPFragment() {
         override fun onItemLongPressed(position: Int) {
             d(TAG, "viewHolderCallBack: onItemLongPressed called p=$position")
             rAdapter.getItemFromPosition(position)?.let {
-                changeFragment(
-                    EditScheduleFragment.newInstance(it.appPkgName, it.startTime),
-                    TransactionType.ADD_FRAGMENT
-                )
+                showDeletePopUp(1L) //todo - here in this line
             } ?: e(TAG, "onItemLongPressed: no item found in adapter $position")
         }
     }
@@ -110,6 +114,46 @@ class HomeFragment: GPFragment() {
                 else -> View.GONE
             }
         })
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun showDeletePopUp(startTime: Long) {
+        d(TAG, "showDeletePopUp: called for $startTime")
+        val cDialog = Dialog(requireContext()).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.dialog_simple_confirmation)
+            setCancelable(false)
+            window?.setLayout(MATCH_PARENT, WRAP_CONTENT)
+            window?.attributes?.windowAnimations = R.style.DialogScaleAnimation
+        }
+
+        GPUtils().setWindowBackground(
+            context = context,
+            window = cDialog.window,
+            drawableId = R.drawable.common_dialog_background
+        )
+
+        val titleTv = cDialog.findViewById<TextView>(R.id.dialog_confirmation_title)
+        val detailsTv = cDialog.findViewById<TextView>(R.id.dialog_confirmation_details)
+        val okBtnTv = cDialog.findViewById<TextView>(R.id.dialog_confirmation_ok_button)
+        val cancelBtnTv = cDialog.findViewById<TextView>(R.id.dialog_confirmation_cancel_button)
+
+        titleTv.text = "Delete schedule"
+        detailsTv.text = "Are you sure that you want to delete the schedule?"
+        okBtnTv.text = "OK"
+        cancelBtnTv.text = "Cancel"
+
+        okBtnTv.setOnClickListener {
+            d(TAG, "showDeletePopUp: ok pressed")
+            viewModel.deleteSingleTask(startTime)
+            cDialog.dismiss()
+        }
+        cancelBtnTv.setOnClickListener {
+            d(TAG, "showDeletePopUp: cancel pressed")
+            cDialog.dismiss()
+        }
+
+        cDialog.show()
     }
 
 }

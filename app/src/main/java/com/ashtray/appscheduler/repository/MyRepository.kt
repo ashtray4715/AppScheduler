@@ -52,6 +52,13 @@ class MyRepository(context: Context) {
         }
     }
 
+    fun deleteSingleTask(startTime: Long) {
+        asyncExecutor.executeAsync {
+            d(TAG, "deleteSingleTask: executing..")
+            myTaskDao.deleteSingleTask(startTime)
+        }
+    }
+
     fun markTaskAsCompleted(startTime: Long) {
         asyncExecutor.executeAsync {
             d(TAG, "markTaskAsCompleted: executing..")
