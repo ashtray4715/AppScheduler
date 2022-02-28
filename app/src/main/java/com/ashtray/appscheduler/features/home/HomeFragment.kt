@@ -17,7 +17,9 @@ import android.view.View
 import com.ashtray.appscheduler.R
 import com.ashtray.appscheduler.common.GPDateTime
 import com.ashtray.appscheduler.common.GPLog.d
+import com.ashtray.appscheduler.common.GPLog.e
 import com.ashtray.appscheduler.features.addschedule.AddScheduleFragment
+import com.ashtray.appscheduler.features.editschedule.EditScheduleFragment
 import com.ashtray.appscheduler.features.history.HistoryFragment
 
 class HomeFragment: GPFragment() {
@@ -38,6 +40,28 @@ class HomeFragment: GPFragment() {
 
     private lateinit var rAdapter: RemainingListAdapter
 
+    private val viewHolderCallBack = object : RemainingListViewHolder.CallBacks {
+        override fun onItemPressed(position: Int) {
+            d(TAG, "viewHolderCallBack: onItemPressed called p=$position")
+            rAdapter.getItemFromPosition(position)?.let {
+                changeFragment(
+                    EditScheduleFragment.newInstance(it.appPkgName, it.startTime),
+                    TransactionType.ADD_FRAGMENT
+                )
+            } ?: e(TAG, "onItemPressed: no item found in adapter $position")
+        }
+
+        override fun onItemLongPressed(position: Int) {
+            d(TAG, "viewHolderCallBack: onItemLongPressed called p=$position")
+            rAdapter.getItemFromPosition(position)?.let {
+                changeFragment(
+                    EditScheduleFragment.newInstance(it.appPkgName, it.startTime),
+                    TransactionType.ADD_FRAGMENT
+                )
+            } ?: e(TAG, "onItemLongPressed: no item found in adapter $position")
+        }
+    }
+
     override fun getUniqueTag(): String {
         return TAG
     }
@@ -50,7 +74,7 @@ class HomeFragment: GPFragment() {
         d(TAG, "onCreateView: called")
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        rAdapter = RemainingListAdapter(context)
+        rAdapter = RemainingListAdapter(context, viewHolderCallBack)
         binding.rvAppList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = rAdapter

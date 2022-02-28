@@ -59,4 +59,11 @@ class MyRepository(context: Context) {
         }
     }
 
+    fun updateExistingTask(pTime: Long, nTime: Long) {
+        asyncExecutor.executeAsync {
+            d(TAG, "updateExistingTask: executing..")
+            myTaskDao.updateExistingTask(pTime, nTime)
+        }
+    }
+
 }
