@@ -165,9 +165,7 @@ class HomeFragment: GPFragment() {
                     d(TAG, "showDeletePopUp: delete failed")
                     showToastMessage("Delete failed")
                 }
-
             }
-
             cDialog.dismiss()
         }
         cancelBtnTv.setOnClickListener {
